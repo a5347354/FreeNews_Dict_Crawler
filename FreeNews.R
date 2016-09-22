@@ -21,7 +21,7 @@ repeat{
   sub_news_url = news_url %>% html_nodes(".picword") %>% html_attr("href")
   df = data.frame(times = times,sub_news_url = sub_news_url)
   df = subset(df,as.Date(df$times) >= start_date)
-  print(paste0("第",i,"頁完成"))
+  print(paste0(i," Page Finished"))
   if(length(df$sub_news_url) != 0){
       for(j in 1:length(df$sub_news_url)){
         # 抓取子頁keyword
@@ -33,10 +33,13 @@ repeat{
       break
   }
 }
-#不重複，並把第一個空字元刪除
+#不重複，並把第一個空字元刪除a
 keyword = unique(keyword[-1])
 
 #寫入txt裡
-fileConn<-file("direc.txt")
-writeLines(keyword, fileConn)
-close(fileConn)
+if(file.exists("direc.txt")){
+  write(keyword,file = "direc.txt",append = TRUE)
+}else{
+  file.create("direc.txt",showWarnings = TRUE)
+  write(keyword,file = "direc.txt",append = TRUE)
+}
